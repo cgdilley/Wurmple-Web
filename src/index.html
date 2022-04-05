@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wurmple</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/dex.js"></script>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="https://justingolden.me/pokemon-types-css/types.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+    <script>$(function () {
+        $("#info_dialog").dialog({width: "90%", modal: true, autoOpen: false});
+    });</script>
+</head>
+<body>
+
+<div id="info_dialog" title="Explanation">
+    <p>Welcome to <strong>Wurmple</strong>, the Pokémon Wordle!</p>
+    <p>The goal of the game is to guess the correct sequence of 5 Pokémon. </p>
+    <p>Each Pokémon in the sequence must share at least one of its types with the Pokémon preceding it in the
+        sequence. </p>
+    <p>Any guesses you make will be considered correct as long as its typing exactly matches
+        that of the original answer.</p>
+    <p><strong>Note:</strong> A <i>'typing'</i> refers to the set of 1 or 2 types belonging to a
+        particular Pokémon.</p>
+    <h4>Example:</h4>
+    <table>
+        <tr>
+            <td><input class="pok_input" readonly value="BULBASAUR"></td>
+            <td><input class="pok_input" readonly value="LUDICOLO"></td>
+            <td><input class="pok_input" readonly value="QUAGSIRE"></td>
+            <td><input class="pok_input" readonly value="ONIX"></td>
+            <td><input class="pok_input" readonly value="REGIROCK"></td>
+        </tr>
+        <tr>
+            <td><span class="type sm grass"></span><span class="type sm poison"></span></td>
+            <td><span class="type sm grass"></span><span class="type sm water"></span></td>
+            <td><span class="type sm ground"></span><span class="type sm water"></span></td>
+            <td><span class="type sm ground"></span><span class="type sm rock"></span></td>
+            <td><span class="type sm rock"></span></td>
+        </tr>
+    </table>
+    <h4>Hints:</h4>
+    <ul>
+        <li>
+            <div class="sample_box exact_match"></div>
+            An exact typing match in this position; a correct guess
+        </li>
+        <li>
+            <div class="sample_box exact_misaligned"></div>
+            An exact typing match to a typing in a different position
+        </li>
+        <li>
+            <div class="sample_box exact_misaligned_and_partial_match"></div>
+            An exact typing match to a typing in a different position.  In addition, one of these types are correct
+            for this position as well
+        </li>
+        <li>
+            <div class="sample_box partial_match"></div>
+            One of the types in this position are correct
+        </li>
+        <li>
+            <div class="sample_box partial_misaligned"></div>
+            One of the types in this position are found elsewhere in the sequence
+        </li>
+        <li>
+            <div class="sample_box no_match"></div>
+            None of the types match anything in the sequence
+        </li>
+    </ul>
+    <hr/>
+    <p class="feedback">Send any feedback to:  <a href="mailto: christopher@sprelf.com">christopher@sprelf.com</a></p>
+</div>
+
+<div class="title">
+    <img src="img/wurmple.png"/>
+    <h1>Wurmple</h1>
+    <img src="img/icon-info-sm.png" id="info_button"/>
+</div>
+<hr/>
+<form onsubmit="return false;">
+    <table id="input_table">
+    </table>
+
+    <datalist id="pok"></datalist>
+</form>
+
+<div class="message_area"></div>
+
+<table id="typing_table">
+    <tr>
+        <td>
+            <div class="type_container"><span class="type normal"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type fire"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type water"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type grass"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type electric"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type ice"></span></div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="type_container"><span class="type fighting"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type poison"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type ground"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type flying"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type psychic"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type bug"></span></div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="type_container"><span class="type rock"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type ghost"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type dark"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type dragon"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type steel"></span></div>
+        </td>
+        <td>
+            <div class="type_container"><span class="type fairy"></span></div>
+        </td>
+    </tr>
+</table>
+<table id="type_pairing_table">
+    <!--<tr><td class="heading">Type Pairings</td></tr>-->
+    <tr>
+        <td id="confirmed_column">
+            <div class="heading">Confirmed:</div>
+            <div class="typing_list"><span>None</span></div>
+        </td>
+        <td id="eliminated_column">
+            <div class="heading">Eliminated:</div>
+            <div class="typing_list"><span>None</span></div>
+        </td>
+    </tr>
+    <tr></tr>
+</table>
+
+
+<script>on_load();</script>
+</body>
+</html>
